@@ -185,6 +185,9 @@ def main():
     empty list for each team.
     """
     plays = [[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+
+    rootpass = getpass.getpass('Enter the MySQL root password: ')
+    
     # Get the basic information--week number, home team, away team, and url of play-by-play data--for each game.
     games = get_games()
     for game in games:
@@ -200,7 +203,7 @@ def main():
         plays[team_number[game[2]]-1].append(away_plays)
     
     # Next, I need to export play data to a MySQL database. Here, I connect to the MySQL server.
-    rootpass = getpass.getpass('Enter the MySQL root password: ')
+    #rootpass = getpass.getpass('Enter the MySQL root password: ')
     con = MySQLdb.connect('localhost', 'root', rootpass)
     cur = con.cursor()
     # Create and use the database NFL_Offensive_Plays_2015.
@@ -213,6 +216,7 @@ def main():
         for game in plays[team_number[key]-1]:
             for play in game:
                 cur.execute("INSERT INTO `" + key + "`(`Week`, `Time Remaining`, `Down`, `To Go`, `Field Position`, `Score Differential`, `IsPass`) VALUES(" + str(play[0]) + ", " + str(play[1]) + ", " + str(play[2]) + ", " + str(play[3]) + ", " + str(play[4]) + ", " + str(play[5]) + ", " + str(play[6]) + ")")
+    con.commit()
     if con:
         con.close()
 
